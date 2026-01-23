@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arbtr</title>
+    <style>
+        :root {
+            --primary: #ef4444;
+            --primary-dark: #dc2626;
+            --primary-light: #f87171;
+            --bg: #1a1a1a;
+            --card-bg: #262626;
+            --text: #ffffff;
+            --text-muted: #9ca3af;
+            --coin-gold: #ffffff;
+            --coin-silver: #6b7280;
+            --success: #ef4444;
+            --border: #404040;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #1a1a1a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: var(--text);
+        }
+
+        .app-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            max-width: 600px;
+            width: 100%;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        header {
+            background: #1a1a1a;
+            border-bottom: 1px solid var(--border);
+            padding: 20px 24px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        header img {
+            height: 40px;
+            width: auto;
+        }
+
+        main {
+            padding: 24px;
+            min-height: 400px;
+            position: relative;
+        }
+
+        .view {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .view.active-view {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* COIN FLIP */
+        .coin-wrapper {
+            perspective: 1000px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .coin {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            transform-style: preserve-3d;
+            transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .side {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 5rem;
+            font-weight: bold;
+            backface-visibility: hidden;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+        }
+
+        .heads {
+            background: #ffffff;
+            border: 6px solid #e5e5e5;
+            color: #000000;
+        }
+
+        .tails {
+            background: #404040;
+            border: 6px solid #262626;
+            transform: rotateX(180deg);
+            color: #ffffff;
+        }
+
+        /* DICE ROLL */
+        .scene {
+            perspective: 1000px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .cube {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .face {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: #ffffff;
+            border: 3px solid #e5e5e5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            color: #000000;
+            border-radius: 12px;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .front  { transform: rotateY(0deg) translateZ(60px); }
+        .back   { transform: rotateY(180deg) translateZ(60px); }
+        .right  { transform: rotateY(90deg) translateZ(60px); }
+        .left   { transform: rotateY(-90deg) translateZ(60px); }
+        .top    { transform: rotateX(90deg) translateZ(60px); }
+        .bottom { transform: rotateX(-90deg) translateZ(60px); }
+
+        /* PICKER & RANKER SHARED */
+        .input-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .text-input {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+
+        .add-btn {
+            padding: 14px 24px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .add-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        .add-btn:active {
+            transform: scale(0.98);
+        }
+
+        .list-area {
+            min-height: 180px;
+            max-height: 240px;
+            overflow-y: auto;
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .list-area::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .list-area::-webkit-scrollbar-track {
+            background: var(--bg);
+            border-radius: 4px;
+        }
+
+        .list-area::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        .list-item {
+            background: var(--bg);
+            padding: 10px 14px;
+            margin: 4px 0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            animation: slideIn 0.3s ease-out;
+            font-size: 15px;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .list-item.highlight {
+            background: var(--primary);
+            border-color: var(--primary-light);
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+        }
+
+        .list-item.winner {
+            background: var(--success);
+            border-color: #16a34a;
+            animation: pulse 0.5s ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        .delete-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px 6px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .delete-btn:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        /* RANKER SPECIFIC */
+        .rank-item {
+            background: var(--bg);
+            padding: 10px 14px;
+            margin: 4px 0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            animation: slideIn 0.3s ease-out;
+            cursor: move;
+            user-select: none;
+            font-size: 15px;
+        }
+
+        .rank-item:hover {
+            border-color: var(--primary);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .rank-item.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+
+        .rank-item.drag-over {
+            border-color: var(--primary-light);
+            border-style: dashed;
+        }
+
+        .rank-number {
+            background: var(--primary);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        .rank-item-text {
+            flex: 1;
+        }
+
+        .drag-handle {
+            color: var(--text-muted);
+            font-size: 18px;
+            cursor: grab;
+        }
+
+        .rank-item.dragging .drag-handle {
+            cursor: grabbing;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        /* STATUS */
+        .status {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+            min-height: 28px;
+            margin-top: 16px;
+        }
+
+        .status.loading {
+            color: var(--primary-light);
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* ACTION BUTTON */
+        .action-zone {
+            padding: 0 24px 24px;
+        }
+
+        #main-btn {
+            width: 100%;
+            padding: 18px;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            border: none;
+            border-radius: 16px;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        #main-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(239, 68, 68, 0.5);
+            background: var(--primary-dark);
+        }
+
+        #main-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        #main-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* NAVIGATION */
+        nav {
+            display: flex;
+            background: var(--bg);
+            border-top: 1px solid var(--border);
+            overflow-x: auto;
+        }
+
+        nav::-webkit-scrollbar {
+            height: 0;
+        }
+
+        .nav-item {
+            flex: 1;
+            min-width: 80px;
+            padding: 18px 12px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .nav-item:hover {
+            color: var(--text);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--primary);
+        }
+
+        @media (max-width: 480px) {
+            .app-card {
+                border-radius: 0;
+                min-height: 100vh;
+            }
+            
+            main {
+                min-height: calc(100vh - 280px);
+            }
+
+            .nav-item {
+                font-size: 13px;
+                padding: 16px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-card">
+        <header>
+            <img src="images/arbtrlogo.png" alt="Arbtr">
+        </header>
+
+        <main>
+            <div id="view-coin" class="view active-view">
+                <div class="coin-wrapper">
+                    <div class="coin" id="coin">
+                        <div class="side heads">H</div>
+                        <div class="side tails">T</div>
+                    </div>
+                </div>
+                <p class="status" id="coin-status">Ready to flip</p>
+            </div>
+
+            <div id="view-dice" class="view">
+                <div class="scene">
+                    <div class="cube" id="cube">
+                        <div class="face front">1</div>
+                        <div class="face back">2</div>
+                        <div class="face right">3</div>
+                        <div class="face left">4</div>
+                        <div class="face top">5</div>
+                        <div class="face bottom">6</div>
+                    </div>
+                </div>
+                <p class="status" id="dice-status">Ready to roll</p>
+            </div>
+
+            <div id="view-picker" class="view">
+                <div class="input-group">
+                    <input type="text" id="picker-input" class="text-input" placeholder="Add an option..." maxlength="50">
+                    <button id="picker-add-btn" class="add-btn">+</button>
+                </div>
+                <div class="list-area" id="options-list">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <div>Add at least 2 options to get started</div>
+                    </div>
+                </div>
+                <p class="status" id="picker-status">Add options above</p>
+            </div>
+
+            <div id="view-ranker" class="view">
+                <div class="input-group">
+                    <input type="text" id="ranker-input" class="text-input" placeholder="Add item to rank..." maxlength="50">
+                    <button id="ranker-add-btn" class="add-btn">+</button>
+                </div>
+                <div class="list-area" id="ranker-list">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🏆</div>
+                        <div>Add items to create your ranked list</div>
+                    </div>
+                </div>
+                <p class="status" id="ranker-status">Drag to reorder</p>
+            </div>
+        </main>
+
+        <div class="action-zone">
+            <button id="main-btn">FLIP</button>
+        </div>
+
+        <nav>
+            <button class="nav-item active" data-target="view-coin">Coin</button>
+            <button class="nav-item" data-target="view-dice">Dice</button>
+            <button class="nav-item" data-target="view-picker">Picker</button>
+            <button class="nav-item" data-target="view-ranker">Ranker</button>
+        </nav>
+    </div>
+
+    <script>
+        // STATE
+        let mode = 'coin';
+        let options = [];
+        let rankedItems = [];
+
+        // DOM ELEMENTS
+        const mainBtn = document.getElementById('main-btn');
+        const views = {
+            coin: document.getElementById('view-coin'),
+            dice: document.getElementById('view-dice'),
+            picker: document.getElementById('view-picker'),
+            ranker: document.getElementById('view-ranker')
+        };
+        const statuses = {
+            coin: document.getElementById('coin-status'),
+            dice: document.getElementById('dice-status'),
+            picker: document.getElementById('picker-status'),
+            ranker: document.getElementById('ranker-status')
+        };
+        const navItems = document.querySelectorAll('.nav-item');
+
+        // NAVIGATION
+        navItems.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelector('.nav-item.active').classList.remove('active');
+                e.target.classList.add('active');
+                Object.values(views).forEach(v => v.classList.remove('active-view'));
+                
+                const target = e.target.dataset.target;
+                document.getElementById(target).classList.add('active-view');
+
+                if (target === 'view-coin') { 
+                    mode = 'coin'; 
+                    mainBtn.textContent = "FLIP";
+                    mainBtn.style.display = 'block';
+                    statuses.coin.classList.remove('loading');
+                }
+                if (target === 'view-dice') { 
+                    mode = 'dice'; 
+                    mainBtn.textContent = "ROLL";
+                    mainBtn.style.display = 'block';
+                    statuses.dice.classList.remove('loading');
+                }
+                if (target === 'view-picker') { 
+                    mode = 'picker'; 
+                    mainBtn.textContent = "PICK";
+                    mainBtn.style.display = 'block';
+                    statuses.picker.classList.remove('loading');
+                }
+                if (target === 'view-ranker') { 
+                    mode = 'ranker';
+                    mainBtn.textContent = "RANDOMIZE";
+                    mainBtn.style.display = 'block';
+                }
+            });
+        });
+
+        // MAIN BUTTON HANDLER
+        mainBtn.addEventListener('click', () => {
+            mainBtn.disabled = true;
+            if (mode === 'coin') doFlip();
+            if (mode === 'dice') doRoll();
+            if (mode === 'picker') doPick();
+            if (mode === 'ranker') doRandomize();
+        });
+
+        // LOGIC: COIN
+        let coinRot = 0;
+        function doFlip() {
+            statuses.coin.textContent = "Flipping...";
+            statuses.coin.classList.add('loading');
+            
+            const isHeads = Math.random() < 0.5;
+            const spins = 6;
+            const target = isHeads ? 0 : 180;
+            coinRot += (360 * spins) + (target - (coinRot % 360));
+            
+            document.getElementById('coin').style.transform = `rotateX(${coinRot}deg)`;
+            
+            setTimeout(() => {
+                statuses.coin.textContent = isHeads ? "HEADS" : "TAILS";
+                statuses.coin.classList.remove('loading');
+                mainBtn.disabled = false;
+            }, 1200);
+        }
+
+        // LOGIC: DICE
+        function doRoll() {
+            statuses.dice.textContent = "Rolling...";
+            statuses.dice.classList.add('loading');
+            
+            const result = Math.floor(Math.random() * 6) + 1;
+            const cube = document.getElementById('cube');
+            
+            const rotations = {
+                1: [0, 0],   2: [0, 180], 3: [0, -90],
+                4: [0, 90],  5: [-90, 0], 6: [90, 0]
+            };
+            
+            const spinX = (Math.floor(Math.random() * 3) + 3) * 360; 
+            const spinY = (Math.floor(Math.random() * 3) + 3) * 360;
+            const [finalX, finalY] = rotations[result];
+            
+            cube.style.transform = `rotateX(${finalX + spinX}deg) rotateY(${finalY + spinY}deg)`;
+            
+            setTimeout(() => {
+                statuses.dice.textContent = `Rolled a ${result}`;
+                statuses.dice.classList.remove('loading');
+                mainBtn.disabled = false;
+            }, 1200);
+        }
+
+        // LOGIC: PICKER
+        const pickerInput = document.getElementById('picker-input');
+        const optionsList = document.getElementById('options-list');
+        
+        function updatePickerEmptyState() {
+            if (options.length === 0) {
+                optionsList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <div>Add at least 2 options to get started</div>
+                    </div>
+                `;
+            }
+            statuses.picker.textContent = options.length === 0 ? "Add options above" : 
+                                         options.length === 1 ? "Add 1 more option" : 
+                                         "Ready to pick!";
+        }
+
+        function addPickerOption() {
+            const val = pickerInput.value.trim();
+            if (val && options.length < 20) {
+                options.push(val);
+                
+                if (options.length === 1) {
+                    optionsList.innerHTML = '';
+                }
+                
+                const div = document.createElement('div');
+                div.className = 'list-item';
+                div.innerHTML = `
+                    <span>${val}</span>
+                    <button class="delete-btn" onclick="deletePickerOption(${options.length - 1})">✕</button>
+                `;
+                optionsList.appendChild(div);
+                pickerInput.value = '';
+                updatePickerEmptyState();
+            }
+        }
+
+        document.getElementById('picker-add-btn').addEventListener('click', addPickerOption);
+        
+        pickerInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addPickerOption();
+        });
+
+        function deletePickerOption(index) {
+            options.splice(index, 1);
+            renderPickerOptions();
+            updatePickerEmptyState();
+        }
+
+        function renderPickerOptions() {
+            if (options.length === 0) {
+                updatePickerEmptyState();
+                return;
+            }
+            
+            optionsList.innerHTML = '';
+            options.forEach((opt, i) => {
+                const div = document.createElement('div');
+                div.className = 'list-item';
+                div.innerHTML = `
+                    <span>${opt}</span>
+                    <button class="delete-btn" onclick="deletePickerOption(${i})">✕</button>
+                `;
+                optionsList.appendChild(div);
+            });
+        }
+
+        function doPick() {
+            if (options.length < 2) {
+                statuses.picker.textContent = "⚠️ Need at least 2 options";
+                mainBtn.disabled = false;
+                return;
+            }
+            
+            statuses.picker.textContent = "Picking...";
+            statuses.picker.classList.add('loading');
+            
+            let cycles = 0;
+            const items = document.querySelectorAll('#options-list .list-item');
+            let finalIndex;
+            
+            const interval = setInterval(() => {
+                items.forEach(i => i.classList.remove('highlight'));
+                const r = Math.floor(Math.random() * items.length);
+                items[r].classList.add('highlight');
+                finalIndex = r;
+                
+                cycles++;
+                if (cycles > 20) {
+                    clearInterval(interval);
+                    items.forEach(i => i.classList.remove('highlight'));
+                    items[finalIndex].classList.add('winner');
+                    
+                    statuses.picker.textContent = `Winner: ${options[finalIndex]}`;
+                    statuses.picker.classList.remove('loading');
+                    mainBtn.disabled = false;
+                    
+                    setTimeout(() => {
+                        items[finalIndex].classList.remove('winner');
+                    }, 2000);
+                }
+            }, 100);
+        }
+
+        // LOGIC: RANKER
+        const rankerInput = document.getElementById('ranker-input');
+        const rankerList = document.getElementById('ranker-list');
+        let draggedElement = null;
+
+        function updateRankerEmptyState() {
+            if (rankedItems.length === 0) {
+                rankerList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🏆</div>
+                        <div>Add items to create your ranked list</div>
+                    </div>
+                `;
+                statuses.ranker.textContent = "Add items above";
+            } else {
+                statuses.ranker.textContent = "Ready to randomize!";
+            }
+        }
+
+        function addRankerItem() {
+            const val = rankerInput.value.trim();
+            if (val && rankedItems.length < 20) {
+                rankedItems.push(val);
+                renderRankerList();
+                rankerInput.value = '';
+                updateRankerEmptyState();
+            }
+        }
+
+        document.getElementById('ranker-add-btn').addEventListener('click', addRankerItem);
+        
+        rankerInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addRankerItem();
+        });
+
+        function deleteRankerItem(index) {
+            rankedItems.splice(index, 1);
+            renderRankerList();
+            updateRankerEmptyState();
+        }
+
+        function renderRankerList() {
+            if (rankedItems.length === 0) {
+                updateRankerEmptyState();
+                return;
+            }
+            
+            rankerList.innerHTML = '';
+            rankedItems.forEach((item, i) => {
+                const div = document.createElement('div');
+                div.className = 'rank-item';
+                div.draggable = true;
+                div.dataset.index = i;
+                div.innerHTML = `
+                    <span class="drag-handle">☰</span>
+                    <span class="rank-number">${i + 1}</span>
+                    <span class="rank-item-text">${item}</span>
+                    <button class="delete-btn" onclick="deleteRankerItem(${i})">✕</button>
+                `;
+                
+                // Drag events
+                div.addEventListener('dragstart', handleDragStart);
+                div.addEventListener('dragover', handleDragOver);
+                div.addEventListener('drop', handleDrop);
+                div.addEventListener('dragend', handleDragEnd);
+                div.addEventListener('dragenter', handleDragEnter);
+                div.addEventListener('dragleave', handleDragLeave);
+                
+                rankerList.appendChild(div);
+            });
+        }
+
+        function handleDragStart(e) {
+            draggedElement = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+
+        function handleDragEnter(e) {
+            if (this !== draggedElement) {
+                this.classList.add('drag-over');
+            }
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            
+            if (draggedElement !== this) {
+                const draggedIndex = parseInt(draggedElement.dataset.index);
+                const targetIndex = parseInt(this.dataset.index);
+                
+                // Reorder array
+                const item = rankedItems.splice(draggedIndex, 1)[0];
+                rankedItems.splice(targetIndex, 0, item);
+                
+                renderRankerList();
+            }
+            
+            return false;
+        }
+
+        function handleDragEnd(e) {
+            const items = document.querySelectorAll('.rank-item');
+            items.forEach(item => {
+                item.classList.remove('dragging', 'drag-over');
+            });
+        }
+
+        // RANDOMIZE RANKER
+        function doRandomize() {
+            if (rankedItems.length < 2) {
+                statuses.ranker.textContent = "⚠️ Need at least 2 items";
+                mainBtn.disabled = false;
+                return;
+            }
+
+            statuses.ranker.textContent = "Randomizing...";
+            statuses.ranker.classList.add('loading');
+
+            // Shuffle animation
+            let cycles = 0;
+            const interval = setInterval(() => {
+                // Shuffle the array
+                for (let i = rankedItems.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [rankedItems[i], rankedItems[j]] = [rankedItems[j], rankedItems[i]];
+                }
+                renderRankerList();
+                
+                cycles++;
+                if (cycles > 15) {
+                    clearInterval(interval);
+                    statuses.ranker.textContent = "Order randomized!";
+                    statuses.ranker.classList.remove('loading');
+                    mainBtn.disabled = false;
+                }
+            }, 100);
+        }
+
+        // Make delete functions global
+        window.deletePickerOption = deletePickerOption;
+        window.deleteRankerItem = deleteRankerItem;
+    </script>
+</body>
+</html>
