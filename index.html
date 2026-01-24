@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Arbtr</title>
     <meta name="theme-color" content="#1a1a1a">
     <link rel="manifest" href="manifest.json">
@@ -19,23 +19,29 @@
             --coin-silver: #6b7280;
             --success: #ef4444;
             --border: #404040;
+            /* Safe area variables for iPhone X+ */
+            --sat: env(safe-area-inset-top);
+            --sab: env(safe-area-inset-bottom);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background: #1a1a1a;
+            color: var(--text);
+            
+            /* DESKTOP DEFAULTS */
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
-            color: var(--text);
         }
 
         .app-card {
@@ -46,8 +52,35 @@
             width: 100%;
             overflow: hidden;
             border: 1px solid var(--border);
-            /* Prepare for flex layout on mobile */
-            display: block;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* --- MOBILE LAYOUT OVERRIDE --- */
+        @media (max-width: 480px) {
+            html, body {
+                height: 100%;
+                width: 100%;
+                padding: 0;
+                margin: 0;
+                overflow: hidden; /* Stop page scroll */
+            }
+
+            body {
+                display: block; /* Reset flex centering */
+            }
+
+            .app-card {
+                max-width: 100%;
+                border-radius: 0;
+                border: none;
+                box-shadow: none;
+                
+                /* CRITICAL FIX: Use dvh to fit visible screen exactly */
+                height: 100vh; /* Fallback */
+                height: 100dvh; 
+            }
         }
 
         header {
@@ -55,29 +88,35 @@
             border-bottom: 1px solid var(--border);
             padding: 20px 24px;
             text-align: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            flex-shrink: 0; /* Never shrink */
+            padding-top: max(20px, var(--sat)); /* Respect notch */
         }
 
         header img {
-            height: 40px;
+            height: 32px;
             width: auto;
+            display: block;
+            margin: 0 auto;
         }
 
         main {
             padding: 24px;
-            min-height: 400px;
             position: relative;
+            flex: 1; /* Take all available space */
+            overflow-y: auto; /* Internal scroll only */
+            -webkit-overflow-scrolling: touch;
         }
 
+        /* VIEW TRANSITIONS */
         .view {
             display: none;
             animation: fadeIn 0.3s ease-in;
+            height: 100%; /* Fill main */
         }
 
         .view.active-view {
-            display: block;
+            display: flex;
+            flex-direction: column;
         }
 
         @keyframes fadeIn {
@@ -85,20 +124,20 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* COIN FLIP */
+        /* COIN STYLES */
         .coin-wrapper {
-            perspective: 1000px;
-            height: 200px;
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 20px 0;
+            perspective: 1000px;
+            min-height: 200px;
         }
 
         .coin {
             position: relative;
-            width: 160px;
-            height: 160px;
+            width: 150px;
+            height: 150px;
             transform-style: preserve-3d;
             transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
@@ -111,38 +150,28 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 5rem;
+            font-size: 4.5rem;
             font-weight: bold;
             backface-visibility: hidden;
             box-shadow: 0 8px 30px rgba(0,0,0,0.4);
         }
 
-        .heads {
-            background: #ffffff;
-            border: 6px solid #e5e5e5;
-            color: #000000;
-        }
+        .heads { background: #ffffff; border: 6px solid #e5e5e5; color: #000000; }
+        .tails { background: #404040; border: 6px solid #262626; transform: rotateX(180deg); color: #ffffff; }
 
-        .tails {
-            background: #404040;
-            border: 6px solid #262626;
-            transform: rotateX(180deg);
-            color: #ffffff;
-        }
-
-        /* DICE ROLL */
+        /* DICE STYLES */
         .scene {
-            perspective: 1000px;
-            height: 200px;
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 20px 0;
+            perspective: 1000px;
+            min-height: 200px;
         }
 
         .cube {
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             position: relative;
             transform-style: preserve-3d;
             transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -150,119 +179,90 @@
 
         .face {
             position: absolute;
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             background: #ffffff;
             border: 3px solid #e5e5e5;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: bold;
             color: #000000;
             border-radius: 12px;
             box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
         }
 
-        .front  { transform: rotateY(0deg) translateZ(60px); }
-        .back   { transform: rotateY(180deg) translateZ(60px); }
-        .right  { transform: rotateY(90deg) translateZ(60px); }
-        .left   { transform: rotateY(-90deg) translateZ(60px); }
-        .top    { transform: rotateX(90deg) translateZ(60px); }
-        .bottom { transform: rotateX(-90deg) translateZ(60px); }
+        .front  { transform: rotateY(0deg) translateZ(50px); }
+        .back   { transform: rotateY(180deg) translateZ(50px); }
+        .right  { transform: rotateY(90deg) translateZ(50px); }
+        .left   { transform: rotateY(-90deg) translateZ(50px); }
+        .top    { transform: rotateX(90deg) translateZ(50px); }
+        .bottom { transform: rotateX(-90deg) translateZ(50px); }
 
-        /* PICKER & RANKER SHARED */
+        /* LIST STYLES */
         .input-group {
             display: flex;
             gap: 8px;
             margin-bottom: 16px;
+            flex-shrink: 0;
         }
 
         .text-input {
             flex: 1;
-            padding: 14px 18px;
+            padding: 14px;
             border: 2px solid var(--border);
             border-radius: 12px;
             background: var(--bg);
             color: var(--text);
             font-size: 16px;
-            transition: all 0.2s;
         }
 
         .text-input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
         }
 
         .add-btn {
-            padding: 14px 24px;
+            padding: 0 20px;
             background: var(--primary);
             color: white;
             border: none;
             border-radius: 12px;
-            font-size: 20px;
-            font-weight: bold;
+            font-size: 24px;
             cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .add-btn:hover {
-            background: var(--primary-dark);
-            transform: scale(1.05);
-        }
-
-        .add-btn:active {
-            transform: scale(0.98);
         }
 
         .list-area {
-            min-height: 180px;
-            max-height: 240px;
-            overflow-y: auto;
+            flex: 1; /* Grow to fill space */
+            overflow-y: auto; /* Internal list scroll */
             padding: 4px;
             border-radius: 12px;
             margin-bottom: 16px;
         }
 
-        .list-area::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .list-area::-webkit-scrollbar-track {
+        .list-item, .rank-item {
             background: var(--bg);
-            border-radius: 4px;
-        }
-
-        .list-area::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 4px;
-        }
-
-        .list-item {
-            background: var(--bg);
-            padding: 10px 14px;
-            margin: 4px 0;
+            padding: 12px;
+            margin: 6px 0;
             border-radius: 8px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            transition: all 0.3s;
-            border: 2px solid transparent;
-            animation: slideIn 0.3s ease-out;
+            justify-content: space-between;
             font-size: 15px;
+            animation: slideIn 0.2s ease-out;
+            border: 2px solid transparent;
         }
 
         @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-20px); }
+            from { opacity: 0; transform: translateX(-10px); }
             to { opacity: 1; transform: translateX(0); }
         }
 
+        /* HIGHLIGHTS */
         .list-item.highlight {
             background: var(--primary);
-            border-color: var(--primary-light);
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+            transform: scale(1.02);
         }
 
         .list-item.winner {
@@ -273,328 +273,132 @@
 
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.08); }
-        }
-
-        .delete-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 16px;
-            padding: 4px 6px;
-            border-radius: 6px;
-            transition: all 0.2s;
-        }
-
-        .delete-btn:hover {
-            background: rgba(239, 68, 68, 0.2);
-            color: #ef4444;
-        }
-
-        /* RANKER SPECIFIC */
-        .rank-item {
-            background: var(--bg);
-            padding: 10px 14px;
-            margin: 4px 0;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s;
-            border: 2px solid transparent;
-            animation: slideIn 0.3s ease-out;
-            cursor: move;
-            user-select: none;
-            font-size: 15px;
-        }
-
-        .rank-item:hover {
-            border-color: var(--primary);
-            background: rgba(239, 68, 68, 0.1);
-        }
-
-        .rank-item.dragging {
-            opacity: 0.5;
-            cursor: grabbing;
-        }
-
-        .rank-item.drag-over {
-            border-color: var(--primary-light);
-            border-style: dashed;
+            50% { transform: scale(1.05); }
         }
 
         .rank-number {
             background: var(--primary);
             color: white;
-            width: 28px;
-            height: 28px;
+            width: 24px;
+            height: 24px;
             border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 13px;
-            flex-shrink: 0;
+            font-size: 12px;
+            margin-right: 10px;
         }
 
-        .rank-item-text {
-            flex: 1;
-        }
-
-        .drag-handle {
+        .delete-btn {
+            background: none;
+            border: none;
             color: var(--text-muted);
             font-size: 18px;
-            cursor: grab;
-        }
-
-        .rank-item.dragging .drag-handle {
-            cursor: grabbing;
+            padding: 4px 8px;
         }
 
         .empty-state {
             text-align: center;
             padding: 40px 20px;
             color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
         }
 
-        /* STATUS */
+        /* STATUS & ACTION ZONE */
         .status {
             text-align: center;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
-            color: var(--text);
-            min-height: 28px;
-            margin-top: 16px;
+            color: var(--text-muted);
+            margin: 10px 0;
+            min-height: 24px;
+            flex-shrink: 0;
         }
+        
+        .status.loading { color: var(--primary-light); }
 
-        .status.loading {
-            color: var(--primary-light);
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        /* ACTION BUTTON */
         .action-zone {
-            padding: 0 24px 24px;
+            padding: 0 24px 16px;
+            flex-shrink: 0;
         }
 
         #main-btn {
             width: 100%;
-            padding: 18px;
-            font-size: 18px;
+            padding: 16px;
+            font-size: 16px;
             font-weight: 700;
             letter-spacing: 1px;
             border: none;
-            border-radius: 16px;
+            border-radius: 14px;
             background: var(--primary);
             color: white;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
         }
 
-        #main-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 30px rgba(239, 68, 68, 0.5);
-            background: var(--primary-dark);
-        }
+        #main-btn:disabled { opacity: 0.6; }
 
-        #main-btn:active:not(:disabled) {
-            transform: translateY(0);
-        }
-
-        #main-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        /* NAVIGATION */
+        /* NAV */
         nav {
             display: flex;
             background: var(--bg);
             border-top: 1px solid var(--border);
-            overflow-x: auto;
-        }
-
-        nav::-webkit-scrollbar {
-            height: 0;
+            flex-shrink: 0;
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
         .nav-item {
             flex: 1;
-            min-width: 80px;
-            padding: 18px 12px;
+            padding: 16px 0;
             background: transparent;
             border: none;
             color: var(--text-muted);
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
             position: relative;
-            white-space: nowrap;
         }
 
-        .nav-item:hover {
-            color: var(--text);
-            background: rgba(239, 68, 68, 0.1);
-        }
-
-        .nav-item.active {
-            color: var(--primary);
-        }
-
+        .nav-item.active { color: var(--primary); }
         .nav-item.active::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
+            height: 2px;
             background: var(--primary);
         }
 
-        /* INSTALL PROMPT MODAL STYLES */
+        /* INSTALL MODAL */
         .install-modal {
             position: fixed;
-            bottom: 24px;
+            bottom: 30px;
             left: 20px;
             right: 20px;
             background: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 20px;
+            border-radius: 16px;
+            padding: 16px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.8);
-            z-index: 1000;
+            z-index: 2000;
             display: none;
-            animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            max-width: 500px;
+            max-width: 400px;
             margin: 0 auto;
         }
-
-        @keyframes slideUp {
-            from { transform: translateY(100px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .install-content {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 20px;
-        }
-
-        .install-icon img {
-            width: 48px;
-            height: auto;
-            border-radius: 10px;
-        }
-
-        .install-text h3 {
-            font-size: 18px;
-            margin-bottom: 4px;
-            color: var(--text);
-            font-weight: 700;
-        }
-
-        .install-text p {
-            font-size: 14px;
-            color: var(--text-muted);
-            line-height: 1.4;
-        }
-
-        .install-actions {
-            display: flex;
-            gap: 12px;
-        }
-
-        .install-actions button {
-            flex: 1;
-            padding: 12px;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-
-        .install-btn-primary {
-            background: var(--primary);
-            color: white;
-            border: none;
-        }
-
-        .install-btn-primary:hover {
-            background: var(--primary-dark);
-        }
-
-        .install-btn-secondary {
-            background: transparent;
-            color: var(--text-muted);
-            border: 1px solid var(--border);
-        }
-
-        .install-btn-secondary:hover {
-            border-color: var(--text);
-            color: var(--text);
-        }
-
-        @media (min-width: 600px) {
-            .install-modal {
-                left: 50%;
-                transform: translateX(-50%);
-                width: 100%;
-                max-width: 400px;
-            }
-        }
-
-        /* FIX 2: Mobile Layout (No Scroll, Flexbox) */
-        @media (max-width: 480px) {
-            body {
-                padding: 0;
-                overflow: hidden; /* Stops body scroll */
-            }
-            
-            .app-card {
-                border-radius: 0;
-                height: 100vh;
-                max-height: 100vh;
-                border: none;
-                display: flex;
-                flex-direction: column;
-            }
-
-            header {
-                flex-shrink: 0;
-            }
-            
-            main {
-                flex: 1; /* Fills available space */
-                overflow-y: auto; /* Scrolls internally if needed */
-                min-height: 0;
-                padding-bottom: 0;
-            }
-
-            .action-zone {
-                flex-shrink: 0;
-            }
-
-            nav {
-                flex-shrink: 0;
-                margin-top: auto;
-                padding-bottom: env(safe-area-inset-bottom);
-            }
-
-            .nav-item {
-                font-size: 13px;
-                padding: 16px 8px;
-            }
-        }
+        
+        .install-content { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+        .install-icon img { width: 40px; border-radius: 8px; }
+        .install-text h3 { font-size: 16px; color: var(--text); margin-bottom: 2px; }
+        .install-text p { font-size: 13px; color: var(--text-muted); }
+        .install-actions { display: flex; gap: 10px; }
+        .install-actions button { flex: 1; padding: 10px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; }
+        .install-btn-primary { background: var(--primary); color: white; border: none; }
+        .install-btn-secondary { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
     </style>
 </head>
 <body>
@@ -669,9 +473,7 @@
 
     <div id="install-modal" class="install-modal">
         <div class="install-content">
-            <div class="install-icon">
-                <img src="images/logo192.png" alt="Arbtr">
-            </div>
+            <div class="install-icon"><img src="images/logo192.png" alt="Arbtr"></div>
             <div class="install-text">
                 <h3>Install Arbtr</h3>
                 <p>Add to home screen for the best experience.</p>
@@ -684,9 +486,7 @@
     </div>
 
     <script>
-        // --- PWA INSTALL LOGIC ---
-        
-        // 1. Register Service Worker
+        // --- PWA INSTALL ---
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
@@ -694,56 +494,39 @@
                     .catch(err => console.log('SW failed', err));
             });
         }
-
         let deferredPrompt;
         const installModal = document.getElementById('install-modal');
         const installBtn = document.getElementById('install-accept');
         const dismissBtn = document.getElementById('install-dismiss');
 
-        // 2. Listen for install prompt
         window.addEventListener('beforeinstallprompt', (e) => {
-            // Prevent Chrome 67+ from automatically showing the banner
             e.preventDefault();
             deferredPrompt = e;
-
-            // Check if user has previously rejected
             const hasRejected = localStorage.getItem('arbtr_install_rejected');
             if (hasRejected) return;
-
-            // Check if mobile (basic Regex check)
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            
-            // Only show modal if mobile and not rejected
-            if (isMobile) {
-                installModal.style.display = 'block';
-            }
+            if (isMobile) installModal.style.display = 'block';
         });
 
-        // 3. Handle Install Click
         installBtn.addEventListener('click', async () => {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
+                await deferredPrompt.userChoice;
                 deferredPrompt = null;
             }
             installModal.style.display = 'none';
         });
 
-        // 4. Handle Dismiss Click
         dismissBtn.addEventListener('click', () => {
             installModal.style.display = 'none';
-            // Save rejection to localStorage so it doesn't appear again
             localStorage.setItem('arbtr_install_rejected', 'true');
         });
 
-        // --- EXISTING APP LOGIC ---
-
-        // STATE
+        // --- APP LOGIC ---
         let mode = 'coin';
         let options = [];
         let rankedItems = [];
 
-        // DOM ELEMENTS
         const mainBtn = document.getElementById('main-btn');
         const views = {
             coin: document.getElementById('view-coin'),
@@ -759,7 +542,6 @@
         };
         const navItems = document.querySelectorAll('.nav-item');
 
-        // NAVIGATION
         navItems.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 document.querySelector('.nav-item.active').classList.remove('active');
@@ -795,7 +577,6 @@
             });
         });
 
-        // MAIN BUTTON HANDLER
         mainBtn.addEventListener('click', () => {
             mainBtn.disabled = true;
             if (mode === 'coin') doFlip();
@@ -804,19 +585,15 @@
             if (mode === 'ranker') doRandomize();
         });
 
-        // LOGIC: COIN
         let coinRot = 0;
         function doFlip() {
             statuses.coin.textContent = "Flipping...";
             statuses.coin.classList.add('loading');
-            
             const isHeads = Math.random() < 0.5;
             const spins = 6;
             const target = isHeads ? 0 : 180;
             coinRot += (360 * spins) + (target - (coinRot % 360));
-            
             document.getElementById('coin').style.transform = `rotateX(${coinRot}deg)`;
-            
             setTimeout(() => {
                 statuses.coin.textContent = isHeads ? "HEADS" : "TAILS";
                 statuses.coin.classList.remove('loading');
@@ -824,25 +601,19 @@
             }, 1200);
         }
 
-        // LOGIC: DICE
         function doRoll() {
             statuses.dice.textContent = "Rolling...";
             statuses.dice.classList.add('loading');
-            
             const result = Math.floor(Math.random() * 6) + 1;
             const cube = document.getElementById('cube');
-            
             const rotations = {
                 1: [0, 0],   2: [0, 180], 3: [0, -90],
                 4: [0, 90],  5: [-90, 0], 6: [90, 0]
             };
-            
             const spinX = (Math.floor(Math.random() * 3) + 3) * 360; 
             const spinY = (Math.floor(Math.random() * 3) + 3) * 360;
             const [finalX, finalY] = rotations[result];
-            
             cube.style.transform = `rotateX(${finalX + spinX}deg) rotateY(${finalY + spinY}deg)`;
-            
             setTimeout(() => {
                 statuses.dice.textContent = `Rolled a ${result}`;
                 statuses.dice.classList.remove('loading');
@@ -850,13 +621,11 @@
             }, 1200);
         }
 
-        // LOGIC: PICKER
         const pickerInput = document.getElementById('picker-input');
         const optionsList = document.getElementById('options-list');
         
         function updatePickerEmptyState() {
             if (options.length === 0) {
-                // FIX 3: Removed Emoji
                 optionsList.innerHTML = `
                     <div class="empty-state">
                         <div>Add at least 2 options to get started</div>
@@ -872,28 +641,17 @@
             const val = pickerInput.value.trim();
             if (val && options.length < 20) {
                 options.push(val);
-                
-                if (options.length === 1) {
-                    optionsList.innerHTML = '';
-                }
-                
+                if (options.length === 1) optionsList.innerHTML = '';
                 const div = document.createElement('div');
                 div.className = 'list-item';
-                div.innerHTML = `
-                    <span>${val}</span>
-                    <button class="delete-btn" onclick="deletePickerOption(${options.length - 1})">✕</button>
-                `;
+                div.innerHTML = `<span>${val}</span><button class="delete-btn" onclick="deletePickerOption(${options.length - 1})">✕</button>`;
                 optionsList.appendChild(div);
                 pickerInput.value = '';
                 updatePickerEmptyState();
             }
         }
-
         document.getElementById('picker-add-btn').addEventListener('click', addPickerOption);
-        
-        pickerInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') addPickerOption();
-        });
+        pickerInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') addPickerOption(); });
 
         function deletePickerOption(index) {
             options.splice(index, 1);
@@ -906,15 +664,11 @@
                 updatePickerEmptyState();
                 return;
             }
-            
             optionsList.innerHTML = '';
             options.forEach((opt, i) => {
                 const div = document.createElement('div');
                 div.className = 'list-item';
-                div.innerHTML = `
-                    <span>${opt}</span>
-                    <button class="delete-btn" onclick="deletePickerOption(${i})">✕</button>
-                `;
+                div.innerHTML = `<span>${opt}</span><button class="delete-btn" onclick="deletePickerOption(${i})">✕</button>`;
                 optionsList.appendChild(div);
             });
         }
@@ -925,45 +679,35 @@
                 mainBtn.disabled = false;
                 return;
             }
-            
             statuses.picker.textContent = "Picking...";
             statuses.picker.classList.add('loading');
-            
             let cycles = 0;
             const items = document.querySelectorAll('#options-list .list-item');
             let finalIndex;
-            
             const interval = setInterval(() => {
                 items.forEach(i => i.classList.remove('highlight'));
                 const r = Math.floor(Math.random() * items.length);
                 items[r].classList.add('highlight');
                 finalIndex = r;
-                
                 cycles++;
                 if (cycles > 20) {
                     clearInterval(interval);
                     items.forEach(i => i.classList.remove('highlight'));
                     items[finalIndex].classList.add('winner');
-                    
                     statuses.picker.textContent = `Winner: ${options[finalIndex]}`;
                     statuses.picker.classList.remove('loading');
                     mainBtn.disabled = false;
-                    
-                    setTimeout(() => {
-                        items[finalIndex].classList.remove('winner');
-                    }, 2000);
+                    setTimeout(() => items[finalIndex].classList.remove('winner'), 2000);
                 }
             }, 100);
         }
 
-        // LOGIC: RANKER
         const rankerInput = document.getElementById('ranker-input');
         const rankerList = document.getElementById('ranker-list');
         let draggedElement = null;
 
         function updateRankerEmptyState() {
             if (rankedItems.length === 0) {
-                // FIX 3: Removed Emoji
                 rankerList.innerHTML = `
                     <div class="empty-state">
                         <div>Add items to create your ranked list</div>
@@ -984,12 +728,8 @@
                 updateRankerEmptyState();
             }
         }
-
         document.getElementById('ranker-add-btn').addEventListener('click', addRankerItem);
-        
-        rankerInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') addRankerItem();
-        });
+        rankerInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') addRankerItem(); });
 
         function deleteRankerItem(index) {
             rankedItems.splice(index, 1);
@@ -1002,103 +742,51 @@
                 updateRankerEmptyState();
                 return;
             }
-            
             rankerList.innerHTML = '';
             rankedItems.forEach((item, i) => {
                 const div = document.createElement('div');
                 div.className = 'rank-item';
                 div.draggable = true;
                 div.dataset.index = i;
-                div.innerHTML = `
-                    <span class="drag-handle">☰</span>
-                    <span class="rank-number">${i + 1}</span>
-                    <span class="rank-item-text">${item}</span>
-                    <button class="delete-btn" onclick="deleteRankerItem(${i})">✕</button>
-                `;
-                
-                // Drag events
+                div.innerHTML = `<span class="drag-handle">☰</span><span class="rank-number">${i + 1}</span><span class="rank-item-text">${item}</span><button class="delete-btn" onclick="deleteRankerItem(${i})">✕</button>`;
                 div.addEventListener('dragstart', handleDragStart);
                 div.addEventListener('dragover', handleDragOver);
                 div.addEventListener('drop', handleDrop);
                 div.addEventListener('dragend', handleDragEnd);
-                div.addEventListener('dragenter', handleDragEnter);
-                div.addEventListener('dragleave', handleDragLeave);
-                
                 rankerList.appendChild(div);
             });
         }
 
-        function handleDragStart(e) {
-            draggedElement = this;
-            this.classList.add('dragging');
-            e.dataTransfer.effectAllowed = 'move';
-        }
-
-        function handleDragOver(e) {
-            if (e.preventDefault) {
-                e.preventDefault();
-            }
-            e.dataTransfer.dropEffect = 'move';
-            return false;
-        }
-
-        function handleDragEnter(e) {
-            if (this !== draggedElement) {
-                this.classList.add('drag-over');
-            }
-        }
-
-        function handleDragLeave(e) {
-            this.classList.remove('drag-over');
-        }
-
+        function handleDragStart(e) { draggedElement = this; this.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; }
+        function handleDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }
         function handleDrop(e) {
-            if (e.stopPropagation) {
-                e.stopPropagation();
-            }
-            
+            e.stopPropagation();
             if (draggedElement !== this) {
                 const draggedIndex = parseInt(draggedElement.dataset.index);
                 const targetIndex = parseInt(this.dataset.index);
-                
-                // Reorder array
                 const item = rankedItems.splice(draggedIndex, 1)[0];
                 rankedItems.splice(targetIndex, 0, item);
-                
                 renderRankerList();
             }
-            
             return false;
         }
+        function handleDragEnd(e) { document.querySelectorAll('.rank-item').forEach(i => i.classList.remove('dragging')); }
 
-        function handleDragEnd(e) {
-            const items = document.querySelectorAll('.rank-item');
-            items.forEach(item => {
-                item.classList.remove('dragging', 'drag-over');
-            });
-        }
-
-        // RANDOMIZE RANKER
         function doRandomize() {
             if (rankedItems.length < 2) {
                 statuses.ranker.textContent = "⚠️ Need at least 2 items";
                 mainBtn.disabled = false;
                 return;
             }
-
             statuses.ranker.textContent = "Randomizing...";
             statuses.ranker.classList.add('loading');
-
-            // Shuffle animation
             let cycles = 0;
             const interval = setInterval(() => {
-                // Shuffle the array
                 for (let i = rankedItems.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
                     [rankedItems[i], rankedItems[j]] = [rankedItems[j], rankedItems[i]];
                 }
                 renderRankerList();
-                
                 cycles++;
                 if (cycles > 15) {
                     clearInterval(interval);
@@ -1109,7 +797,6 @@
             }, 100);
         }
 
-        // Make delete functions global
         window.deletePickerOption = deletePickerOption;
         window.deleteRankerItem = deleteRankerItem;
     </script>
