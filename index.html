@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arbtr</title>
-	<meta name="theme-color" content="#1a1a1a">
+    <meta name="theme-color" content="#1a1a1a">
     <link rel="manifest" href="manifest.json">
     <style>
         :root {
@@ -46,6 +46,8 @@
             width: 100%;
             overflow: hidden;
             border: 1px solid var(--border);
+            /* Prepare for flex layout on mobile */
+            display: block;
         }
 
         header {
@@ -356,12 +358,6 @@
             color: var(--text-muted);
         }
 
-        .empty-state-icon {
-            font-size: 48px;
-            margin-bottom: 12px;
-            opacity: 0.5;
-        }
-
         /* STATUS */
         .status {
             text-align: center;
@@ -557,14 +553,41 @@
             }
         }
 
+        /* FIX 2: Mobile Layout (No Scroll, Flexbox) */
         @media (max-width: 480px) {
+            body {
+                padding: 0;
+                overflow: hidden; /* Stops body scroll */
+            }
+            
             .app-card {
                 border-radius: 0;
-                min-height: 100vh;
+                height: 100vh;
+                max-height: 100vh;
+                border: none;
+                display: flex;
+                flex-direction: column;
+            }
+
+            header {
+                flex-shrink: 0;
             }
             
             main {
-                min-height: calc(100vh - 280px);
+                flex: 1; /* Fills available space */
+                overflow-y: auto; /* Scrolls internally if needed */
+                min-height: 0;
+                padding-bottom: 0;
+            }
+
+            .action-zone {
+                flex-shrink: 0;
+            }
+
+            nav {
+                flex-shrink: 0;
+                margin-top: auto;
+                padding-bottom: env(safe-area-inset-bottom);
             }
 
             .nav-item {
@@ -612,7 +635,6 @@
                 </div>
                 <div class="list-area" id="options-list">
                     <div class="empty-state">
-                        <div class="empty-state-icon">📝</div>
                         <div>Add at least 2 options to get started</div>
                     </div>
                 </div>
@@ -626,7 +648,6 @@
                 </div>
                 <div class="list-area" id="ranker-list">
                     <div class="empty-state">
-                        <div class="empty-state-icon">🏆</div>
                         <div>Add items to create your ranked list</div>
                     </div>
                 </div>
@@ -835,9 +856,9 @@
         
         function updatePickerEmptyState() {
             if (options.length === 0) {
+                // FIX 3: Removed Emoji
                 optionsList.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-icon">📝</div>
                         <div>Add at least 2 options to get started</div>
                     </div>
                 `;
@@ -942,9 +963,9 @@
 
         function updateRankerEmptyState() {
             if (rankedItems.length === 0) {
+                // FIX 3: Removed Emoji
                 rankerList.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-icon">🏆</div>
                         <div>Add items to create your ranked list</div>
                     </div>
                 `;
