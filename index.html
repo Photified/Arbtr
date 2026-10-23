@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Arbtr</title>
-    <meta name="theme-color" content="#1a1a1a">
+    <meta name="theme-color" content="#111214">
+<link rel="apple-touch-icon" href="images/logo192.png">
+<meta name="description" content="Flip a coin, roll a die, pick a winner or shuffle a list. A simple way to settle it.">
     <link rel="manifest" href="manifest.json">
     <style>
         :root {
@@ -399,26 +401,54 @@
         .install-actions button { flex: 1; padding: 10px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; }
         .install-btn-primary { background: var(--primary); color: white; border: none; }
         .install-btn-secondary { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
-    </style>
+    
+/* Arbtr refreshed */
+:root{--bg:#111214;--card-bg:#191b1f;--border:#303238;--text-muted:#a2a4ad;--primary:#f05252;--success:#f05252}
+body{background:#111214;background-image:radial-gradient(ellipse at 50% 0%,#2c2023 0%,transparent 65%);padding:28px;min-height:100dvh}
+.app-card{max-width:500px;min-height:700px;height:min(850px,calc(100dvh - 56px));border-radius:28px;box-shadow:0 30px 100px #0005}
+header{display:flex;align-items:center;justify-content:space-between;text-align:left;padding:22px 26px;background:transparent;border-bottom:0;gap:12px}
+header img{height:27px;margin:0;max-width:130px;object-fit:contain}
+.tagline{font-size:11px;letter-spacing:1.4px;color:var(--text-muted);text-transform:uppercase}
+main{padding:16px 26px 0;min-height:0}
+.view{height:100%;min-height:0}
+.view-heading .eyebrow{font-size:10px;color:var(--primary-light);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+h1{font-size:30px;font-weight:650;letter-spacing:-1px;line-height:1.15}
+.view-heading p{font-size:14px;line-height:1.5;color:var(--text-muted);margin-top:9px;margin-bottom:16px}
+.coin-wrapper,.scene{min-height:170px;position:relative}
+.coin-wrapper:before,.scene:before{content:'';position:absolute;width:230px;height:230px;border:1px solid #ffffff06;border-radius:50%;background:radial-gradient(circle,#ffffff05,transparent 70%);pointer-events:none}
+.coin{width:144px;height:144px}.side{font-size:57px;font-weight:600}.heads{background:linear-gradient(135deg,#fff,#c6c8cf);border:7px double #a8aab2;color:#22242a}.tails{background:linear-gradient(135deg,#595b64,#2a2c33);border:7px double #8b8e98}
+.status{font-size:24px;color:#f5f5f7;font-weight:650;letter-spacing:-.5px;margin:12px 0;overflow-wrap:anywhere;line-height:1.3}
+.status.loading{font-size:20px}
+.recent{min-height:40px;display:flex;gap:7px;align-items:center;justify-content:center;flex-wrap:wrap;padding:0 0 14px;color:var(--text-muted);font-size:11px}
+.recent span{background:#ffffff07;border:1px solid #ffffff09;border-radius:8px;padding:5px 9px;color:#cccdd3}
+.recent .recent-label{background:none;border:0;padding:0 5px 0 0;color:var(--text-muted)}
+.action-zone{padding:10px 26px 22px}#main-btn{letter-spacing:0;font-size:16px;padding:18px;background:var(--primary);box-shadow:none;border-radius:16px;transition:background .15s,transform .15s}#main-btn:hover{background:#fa6565}#main-btn:active{transform:scale(.98)}#main-btn:disabled{opacity:.4;cursor:default}
+nav{padding:10px 16px max(12px,env(safe-area-inset-bottom));gap:4px;background:#15171a}.nav-item{padding:12px 0;border-radius:12px;font-size:12px;cursor:pointer}.nav-item.active{background:#f0525217;color:#ff8585}.nav-item.active:before{display:none}.nav-icon{display:block;width:20px;height:20px;margin:0 auto 6px}
+.text-input{min-width:0;border:1px solid var(--border);border-radius:12px}.add-btn{font-size:14px;font-weight:600;padding:0 17px;background:#33353c}.input-group{margin-bottom:8px}
+.list-area{min-height:100px;padding:0 3px 3px;margin-bottom:0}.list-item,.rank-item{background:#22242a;border:1px solid #303239;gap:10px;padding:8px 10px;min-height:52px}.item-text{flex:1;min-width:0;overflow-wrap:anywhere}.rank-number{flex-shrink:0;background:#ffffff0c;color:#b6b7c0;margin:0}.delete-btn{cursor:pointer;min-width:36px;min-height:36px;font-size:20px}.list-item.winner{border-color:var(--primary-light);background:#f0525222}.list-item.highlight{background:#f0525233;transform:none}.empty-state{font-size:14px;line-height:1.7;border:1px dashed #393b43;border-radius:14px;height:auto;min-height:130px;margin-top:10px}.list-tools{display:flex;align-items:center;justify-content:space-between;color:var(--text-muted);font-size:11px;margin:9px 0 12px;gap:8px}.quiet-btn{background:none;border:0;color:#b5b6be;padding:8px;cursor:pointer;font:inherit}.list-tools button:hover{color:white}button:focus-visible{outline:2px solid #ff9b9b;outline-offset:3px}button:disabled{cursor:default}.install-modal{bottom:100px}.rank-actions{display:flex;gap:0}.rank-actions button{font-size:14px;padding:4px;min-width:30px}
+@media(max-width:480px){body{padding:0;background:#191b1f}.app-card{height:100dvh;min-height:0;border-radius:0}header{padding: max(20px,env(safe-area-inset-top)) 22px 12px}main{padding:14px 22px 0}.action-zone{padding:10px 22px 18px}h1{font-size:28px}}
+@media(max-height:680px){.coin-wrapper,.scene{min-height:155px}.app-card{min-height:0}.view-heading p{margin-bottom:8px}.view-heading .eyebrow{display:none}header{padding-bottom:8px}.recent{padding-bottom:4px}.status{margin:8px 0}h1{font-size:25px}}
+@media(prefers-reduced-motion:reduce){*,*:before{animation:none!important;transition:none!important}}
+</style>
 </head>
 <body>
     <div class="app-card">
         <header>
-            <img src="images/arbtrlogo.png" alt="Arbtr">
+            <img src="images/arbtrlogo.png" alt="Arbtr"><span class="tagline">Consider it settled.</span>
         </header>
 
         <main>
-            <div id="view-coin" class="view active-view">
+            <div id="view-coin" class="view active-view"><div class="view-heading"><div class="eyebrow">01 / The classic</div><h1>Flip a coin</h1><p>Two sides. One decision.</p></div>
                 <div class="coin-wrapper">
                     <div class="coin" id="coin">
                         <div class="side heads">H</div>
                         <div class="side tails">T</div>
                     </div>
                 </div>
-                <p class="status" id="coin-status">Ready to flip</p>
+                <p class="status" role="status" aria-live="polite" id="coin-status">Ready to flip</p><div class="recent" id="coin-recent"></div>
             </div>
 
-            <div id="view-dice" class="view">
+            <div id="view-dice" class="view"><div class="view-heading"><div class="eyebrow">02 / Take a chance</div><h1>Roll the dice</h1><p>One die. Six possibilities.</p></div>
                 <div class="scene">
                     <div class="cube" id="cube">
                         <div class="face front">1</div>
@@ -429,45 +459,45 @@
                         <div class="face bottom">6</div>
                     </div>
                 </div>
-                <p class="status" id="dice-status">Ready to roll</p>
+                <p class="status" role="status" aria-live="polite" id="dice-status">Ready to roll</p><div class="recent" id="dice-recent"></div>
             </div>
 
-            <div id="view-picker" class="view">
+            <div id="view-picker" class="view"><div class="view-heading"><div class="eyebrow">03 / Leave it to chance</div><h1>Pick a winner</h1><p>Add your options. Let Arbtr choose one.</p></div>
                 <div class="input-group">
-                    <input type="text" id="picker-input" class="text-input" placeholder="Add an option..." maxlength="50">
-                    <button id="picker-add-btn" class="add-btn">+</button>
+                    <input type="text" aria-label="Add an option" id="picker-input" class="text-input" placeholder="Add an option..." maxlength="50">
+                    <button id="picker-add-btn" class="add-btn">Add</button>
                 </div>
                 <div class="list-area" id="options-list">
                     <div class="empty-state">
                         <div>Add at least 2 options to get started</div>
                     </div>
                 </div>
-                <p class="status" id="picker-status">Add options above</p>
+                <div class="list-tools"><span id="picker-count">0 / 20 items</span><div><button class="quiet-btn" id="picker-copy">Copy list</button><button class="quiet-btn" id="picker-clear">Clear</button></div></div><p class="status" role="status" aria-live="polite" id="picker-status">Add options above</p>
             </div>
 
-            <div id="view-ranker" class="view">
+            <div id="view-ranker" class="view"><div class="view-heading"><div class="eyebrow">04 / Mix things up</div><h1>Shuffle a list</h1><p>Turn your list into a random order.</p></div>
                 <div class="input-group">
-                    <input type="text" id="ranker-input" class="text-input" placeholder="Add item to rank..." maxlength="50">
-                    <button id="ranker-add-btn" class="add-btn">+</button>
+                    <input type="text" aria-label="Add an option" id="ranker-input" class="text-input" placeholder="Add item to rank..." maxlength="50">
+                    <button id="ranker-add-btn" class="add-btn">Add</button>
                 </div>
                 <div class="list-area" id="ranker-list">
                     <div class="empty-state">
                         <div>Add items to create your ranked list</div>
                     </div>
                 </div>
-                <p class="status" id="ranker-status">Drag to reorder</p>
+                <div class="list-tools"><span id="ranker-count">0 / 20 items</span><div><button class="quiet-btn" id="ranker-copy">Copy list</button><button class="quiet-btn" id="ranker-clear">Clear</button></div></div><p class="status" role="status" aria-live="polite" id="ranker-status">Drag to reorder</p>
             </div>
         </main>
 
         <div class="action-zone">
-            <button id="main-btn">FLIP</button>
+            <button id="main-btn">Flip coin</button>
         </div>
 
         <nav>
-            <button class="nav-item active" data-target="view-coin">Coin</button>
-            <button class="nav-item" data-target="view-dice">Dice</button>
-            <button class="nav-item" data-target="view-picker">Picker</button>
-            <button class="nav-item" data-target="view-ranker">Ranker</button>
+            <button class="nav-item active" data-target="view-coin" aria-pressed="true"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 9h5M9 15h5"/></svg>Coin</button>
+            <button class="nav-item" data-target="view-dice" aria-pressed="false"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 8h.01M16 8h.01M12 12h.01M8 16h.01M16 16h.01"/></svg>Dice</button>
+            <button class="nav-item" data-target="view-picker" aria-pressed="false"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3l-5.6 2.9 1.1-6.2L3 9.6l6.2-.9Z"/></svg>Picker</button>
+            <button class="nav-item" data-target="view-ranker" aria-pressed="false"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h3c6 0 6 12 12 12h3m-4-4 4 4-4 4M3 18h3c2 0 3-1 4-3m4-6c1-2 2-3 4-3h3m-4-4 4 4-4 4"/></svg>Shuffle</button>
         </nav>
     </div>
 
@@ -485,320 +515,6 @@
         </div>
     </div>
 
-    <script>
-        // --- PWA INSTALL ---
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('SW registered'))
-                    .catch(err => console.log('SW failed', err));
-            });
-        }
-        let deferredPrompt;
-        const installModal = document.getElementById('install-modal');
-        const installBtn = document.getElementById('install-accept');
-        const dismissBtn = document.getElementById('install-dismiss');
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            const hasRejected = localStorage.getItem('arbtr_install_rejected');
-            if (hasRejected) return;
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            if (isMobile) installModal.style.display = 'block';
-        });
-
-        installBtn.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                await deferredPrompt.userChoice;
-                deferredPrompt = null;
-            }
-            installModal.style.display = 'none';
-        });
-
-        dismissBtn.addEventListener('click', () => {
-            installModal.style.display = 'none';
-            localStorage.setItem('arbtr_install_rejected', 'true');
-        });
-
-        // --- APP LOGIC ---
-        let mode = 'coin';
-        let options = [];
-        let rankedItems = [];
-
-        const mainBtn = document.getElementById('main-btn');
-        const views = {
-            coin: document.getElementById('view-coin'),
-            dice: document.getElementById('view-dice'),
-            picker: document.getElementById('view-picker'),
-            ranker: document.getElementById('view-ranker')
-        };
-        const statuses = {
-            coin: document.getElementById('coin-status'),
-            dice: document.getElementById('dice-status'),
-            picker: document.getElementById('picker-status'),
-            ranker: document.getElementById('ranker-status')
-        };
-        const navItems = document.querySelectorAll('.nav-item');
-
-        navItems.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                document.querySelector('.nav-item.active').classList.remove('active');
-                e.target.classList.add('active');
-                Object.values(views).forEach(v => v.classList.remove('active-view'));
-                
-                const target = e.target.dataset.target;
-                document.getElementById(target).classList.add('active-view');
-
-                if (target === 'view-coin') { 
-                    mode = 'coin'; 
-                    mainBtn.textContent = "FLIP";
-                    mainBtn.style.display = 'block';
-                    statuses.coin.classList.remove('loading');
-                }
-                if (target === 'view-dice') { 
-                    mode = 'dice'; 
-                    mainBtn.textContent = "ROLL";
-                    mainBtn.style.display = 'block';
-                    statuses.dice.classList.remove('loading');
-                }
-                if (target === 'view-picker') { 
-                    mode = 'picker'; 
-                    mainBtn.textContent = "PICK";
-                    mainBtn.style.display = 'block';
-                    statuses.picker.classList.remove('loading');
-                }
-                if (target === 'view-ranker') { 
-                    mode = 'ranker';
-                    mainBtn.textContent = "RANDOMIZE";
-                    mainBtn.style.display = 'block';
-                }
-            });
-        });
-
-        mainBtn.addEventListener('click', () => {
-            mainBtn.disabled = true;
-            if (mode === 'coin') doFlip();
-            if (mode === 'dice') doRoll();
-            if (mode === 'picker') doPick();
-            if (mode === 'ranker') doRandomize();
-        });
-
-        let coinRot = 0;
-        function doFlip() {
-            statuses.coin.textContent = "Flipping...";
-            statuses.coin.classList.add('loading');
-            const isHeads = Math.random() < 0.5;
-            const spins = 6;
-            const target = isHeads ? 0 : 180;
-            coinRot += (360 * spins) + (target - (coinRot % 360));
-            document.getElementById('coin').style.transform = `rotateX(${coinRot}deg)`;
-            setTimeout(() => {
-                statuses.coin.textContent = isHeads ? "HEADS" : "TAILS";
-                statuses.coin.classList.remove('loading');
-                mainBtn.disabled = false;
-            }, 1200);
-        }
-
-        function doRoll() {
-            statuses.dice.textContent = "Rolling...";
-            statuses.dice.classList.add('loading');
-            const result = Math.floor(Math.random() * 6) + 1;
-            const cube = document.getElementById('cube');
-            const rotations = {
-                1: [0, 0],   2: [0, 180], 3: [0, -90],
-                4: [0, 90],  5: [-90, 0], 6: [90, 0]
-            };
-            const spinX = (Math.floor(Math.random() * 3) + 3) * 360; 
-            const spinY = (Math.floor(Math.random() * 3) + 3) * 360;
-            const [finalX, finalY] = rotations[result];
-            cube.style.transform = `rotateX(${finalX + spinX}deg) rotateY(${finalY + spinY}deg)`;
-            setTimeout(() => {
-                statuses.dice.textContent = `Rolled a ${result}`;
-                statuses.dice.classList.remove('loading');
-                mainBtn.disabled = false;
-            }, 1200);
-        }
-
-        const pickerInput = document.getElementById('picker-input');
-        const optionsList = document.getElementById('options-list');
-        
-        function updatePickerEmptyState() {
-            if (options.length === 0) {
-                optionsList.innerHTML = `
-                    <div class="empty-state">
-                        <div>Add at least 2 options to get started</div>
-                    </div>
-                `;
-            }
-            statuses.picker.textContent = options.length === 0 ? "Add options above" : 
-                                         options.length === 1 ? "Add 1 more option" : 
-                                         "Ready to pick!";
-        }
-
-        function addPickerOption() {
-            const val = pickerInput.value.trim();
-            if (val && options.length < 20) {
-                options.push(val);
-                if (options.length === 1) optionsList.innerHTML = '';
-                const div = document.createElement('div');
-                div.className = 'list-item';
-                div.innerHTML = `<span>${val}</span><button class="delete-btn" onclick="deletePickerOption(${options.length - 1})">✕</button>`;
-                optionsList.appendChild(div);
-                pickerInput.value = '';
-                updatePickerEmptyState();
-            }
-        }
-        document.getElementById('picker-add-btn').addEventListener('click', addPickerOption);
-        pickerInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') addPickerOption(); });
-
-        function deletePickerOption(index) {
-            options.splice(index, 1);
-            renderPickerOptions();
-            updatePickerEmptyState();
-        }
-
-        function renderPickerOptions() {
-            if (options.length === 0) {
-                updatePickerEmptyState();
-                return;
-            }
-            optionsList.innerHTML = '';
-            options.forEach((opt, i) => {
-                const div = document.createElement('div');
-                div.className = 'list-item';
-                div.innerHTML = `<span>${opt}</span><button class="delete-btn" onclick="deletePickerOption(${i})">✕</button>`;
-                optionsList.appendChild(div);
-            });
-        }
-
-        function doPick() {
-            if (options.length < 2) {
-                statuses.picker.textContent = "⚠️ Need at least 2 options";
-                mainBtn.disabled = false;
-                return;
-            }
-            statuses.picker.textContent = "Picking...";
-            statuses.picker.classList.add('loading');
-            let cycles = 0;
-            const items = document.querySelectorAll('#options-list .list-item');
-            let finalIndex;
-            const interval = setInterval(() => {
-                items.forEach(i => i.classList.remove('highlight'));
-                const r = Math.floor(Math.random() * items.length);
-                items[r].classList.add('highlight');
-                finalIndex = r;
-                cycles++;
-                if (cycles > 20) {
-                    clearInterval(interval);
-                    items.forEach(i => i.classList.remove('highlight'));
-                    items[finalIndex].classList.add('winner');
-                    statuses.picker.textContent = `Winner: ${options[finalIndex]}`;
-                    statuses.picker.classList.remove('loading');
-                    mainBtn.disabled = false;
-                    setTimeout(() => items[finalIndex].classList.remove('winner'), 2000);
-                }
-            }, 100);
-        }
-
-        const rankerInput = document.getElementById('ranker-input');
-        const rankerList = document.getElementById('ranker-list');
-        let draggedElement = null;
-
-        function updateRankerEmptyState() {
-            if (rankedItems.length === 0) {
-                rankerList.innerHTML = `
-                    <div class="empty-state">
-                        <div>Add items to create your ranked list</div>
-                    </div>
-                `;
-                statuses.ranker.textContent = "Add items above";
-            } else {
-                statuses.ranker.textContent = "Ready to randomize!";
-            }
-        }
-
-        function addRankerItem() {
-            const val = rankerInput.value.trim();
-            if (val && rankedItems.length < 20) {
-                rankedItems.push(val);
-                renderRankerList();
-                rankerInput.value = '';
-                updateRankerEmptyState();
-            }
-        }
-        document.getElementById('ranker-add-btn').addEventListener('click', addRankerItem);
-        rankerInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') addRankerItem(); });
-
-        function deleteRankerItem(index) {
-            rankedItems.splice(index, 1);
-            renderRankerList();
-            updateRankerEmptyState();
-        }
-
-        function renderRankerList() {
-            if (rankedItems.length === 0) {
-                updateRankerEmptyState();
-                return;
-            }
-            rankerList.innerHTML = '';
-            rankedItems.forEach((item, i) => {
-                const div = document.createElement('div');
-                div.className = 'rank-item';
-                div.draggable = true;
-                div.dataset.index = i;
-                div.innerHTML = `<span class="drag-handle">☰</span><span class="rank-number">${i + 1}</span><span class="rank-item-text">${item}</span><button class="delete-btn" onclick="deleteRankerItem(${i})">✕</button>`;
-                div.addEventListener('dragstart', handleDragStart);
-                div.addEventListener('dragover', handleDragOver);
-                div.addEventListener('drop', handleDrop);
-                div.addEventListener('dragend', handleDragEnd);
-                rankerList.appendChild(div);
-            });
-        }
-
-        function handleDragStart(e) { draggedElement = this; this.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; }
-        function handleDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }
-        function handleDrop(e) {
-            e.stopPropagation();
-            if (draggedElement !== this) {
-                const draggedIndex = parseInt(draggedElement.dataset.index);
-                const targetIndex = parseInt(this.dataset.index);
-                const item = rankedItems.splice(draggedIndex, 1)[0];
-                rankedItems.splice(targetIndex, 0, item);
-                renderRankerList();
-            }
-            return false;
-        }
-        function handleDragEnd(e) { document.querySelectorAll('.rank-item').forEach(i => i.classList.remove('dragging')); }
-
-        function doRandomize() {
-            if (rankedItems.length < 2) {
-                statuses.ranker.textContent = "⚠️ Need at least 2 items";
-                mainBtn.disabled = false;
-                return;
-            }
-            statuses.ranker.textContent = "Randomizing...";
-            statuses.ranker.classList.add('loading');
-            let cycles = 0;
-            const interval = setInterval(() => {
-                for (let i = rankedItems.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [rankedItems[i], rankedItems[j]] = [rankedItems[j], rankedItems[i]];
-                }
-                renderRankerList();
-                cycles++;
-                if (cycles > 15) {
-                    clearInterval(interval);
-                    statuses.ranker.textContent = "Order randomized!";
-                    statuses.ranker.classList.remove('loading');
-                    mainBtn.disabled = false;
-                }
-            }, 100);
-        }
-
-        window.deletePickerOption = deletePickerOption;
-        window.deleteRankerItem = deleteRankerItem;
-    </script>
+<script src="app.js"></script>
 </body>
 </html>
